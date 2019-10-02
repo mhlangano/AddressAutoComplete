@@ -1,0 +1,95 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable" access="global" controller="msGoogleApiController">
+
+    <aura:attribute name="selectedOption" type="String"/>
+    <aura:attribute name="predictions" type="String[]"/>
+    <aura:attribute name="searchString" type="String"/>
+    <aura:attribute name="googleRoute" type="String" />
+    <aura:attribute name="googlePostalCode" type="String" />
+    <aura:attribute name="googleCity" type="String" />
+    <aura:attribute name="googleCountry" type="String" />
+
+    <div class="slds-page-header">
+      <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+          <div class="slds-media">
+            <div class="slds-media__figure">  
+                <lightning:icon iconName="utility:checkin"  />     
+            </div>
+            <div class="slds-media__body">
+              <div class="slds-page-header__name">
+                <div class="slds-page-header__name-title">
+                  <h1>
+                    <span class="slds-page-header__title slds-truncate" title="Google Places API">Google Places API</span>
+                  </h1>
+                </div>
+              </div>
+              <p class="slds-page-header__name-meta">Address auto-complete</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="slds-form-element margin-cls">
+        <div class="slds-form-element__control" > 
+            <div class="slds-combobox_container slds-has-inline-listbox">
+                <div class="slds-combobox slds-combobox-lookup slds-dropdown-trigger slds-dropdown-trigger_click " aura:id="searchLookup"
+                     aria-expanded="false" aria-haspopup="listbox" role="combobox">
+                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left" aura:id="iconPosition">
+                        <ui:inputText updateOn="keyup"
+                                      keyup="{!c.KeyUpHandler}"
+                                      class="slds-input slds-combobox__input"
+                                      value="{!v.searchString}"
+                                      placeholder="Enter a location"/>
+                        <aura:if isTrue="{!empty(v.selectedOption)}">
+                            <span class="slds-icon_container slds-input__icon">
+                                <div class="slds-icon slds-icon slds-icon_x-small slds-icon-text-default icon" >
+                                    <lightning:icon iconName="utility:checkin" size="x-small"/>
+                                </div>
+                            </span>
+                            <aura:set attribute="else">
+                                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" onclick="{!c.clear}">
+                                    <div class="slds-button__icon">
+                                        <lightning:icon iconName="utility:close" size="x-small"/>
+                                    </div>
+                                </button>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+
+                    <div role="listbox">                   
+                        <ul class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid">
+                            <aura:iteration items="{!v.predictions}" var="option">
+                                <li class="slds-listbox__item" role="presentation" onclick="{!c.selectOption}" data-value="{!option.value}" data-record="{!option.label}">
+                                    <span class="slds-media slds-listbox__option slds-listbox__option_entity " role="option">
+                                        <span class="slds-media__body">
+                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">{!option.label}</span>
+                                        </span>
+                                    </span>
+                                </li>
+                            </aura:iteration>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<div class="margin-cls">
+        <ui:inputText class="slds-input" value="{!v.googleRoute}" placeholder="Street" disabled="true"/>
+    </div>    
+  
+    <div class="margin-cls">
+        <ui:inputText class="slds-input" value="{!v.googleCity}" placeholder="City" disabled="true"/>
+    </div>    
+    <div class="margin-cls">
+        <ui:inputText class="slds-input" value="{!v.googlePostalCode}" placeholder="Postal Code" disabled="true"/>
+    </div>
+    <div class="margin-cls">
+        <ui:inputText class="slds-input" value="{!v.googleCountry}" placeholder="Country" disabled="true"/>
+    </div>
+    <!-- hidden -->
+    <div class="margin-cls slds-hide">
+        <ui:inputText class="slds-input" value="{!v.searchString}" placeholder="Full Street" disabled="true"/>
+    </div>     
+
+</aura:component>
